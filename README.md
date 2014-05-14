@@ -18,11 +18,19 @@ The following prerequisites are necessary prior to using the driver:
 
 * python 2.7.x - for node-gyp (make sure it is in the path)
 
+### Windows
+
 * Visual C++ 2010 - the Express edition is freely available from 
 [Microsoft][visualstudio]
 
 * SQL Server Native Client 11.0 - available as Microsoft SQL Server 2012 
 Native Client found in the [SQL Server 2012 Feature Pack][sqlncli]
+
+### Linux
+
+* g++
+* unixODBC and unixODBC-dev/unixODBC-devel (possibly other name, depending on distribution)
+* SQL Server Native Client 11.0 for Linux
 
 ## Build
 

@@ -34,5 +34,4 @@ namespace mssql
     wstring FromV8String(Handle<String> input);
 
     string w2a(const wchar_t* input);
-
 }

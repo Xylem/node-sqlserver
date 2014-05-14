@@ -26,6 +26,24 @@
             '_SQLNCLI_ODBC_',
           ],
           }
+        ],
+        [ 'OS=="linux"', {
+          'defines': [
+            'UNICODE=1',
+            '_UNICODE=1',
+            '_SQLNCLI_ODBC_',
+            'SQL_WCHART_CONVERT'
+          ],
+          'libraries': [
+            '-lodbc'
+          ],
+          'cflags': [
+            '-std=c++0x', '-fshort-wchar'
+          ],
+          'ldflags': [
+            '-pthread'
+           ]
+          }
         ]
       ]
     }

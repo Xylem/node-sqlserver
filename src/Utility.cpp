@@ -47,12 +47,24 @@ namespace mssql
     string w2a(const wchar_t* input)
     {
         vector<char> messageBuffer;
-        int length = ::WideCharToMultiByte(CP_ACP, 0, input, -1, nullptr, 0, nullptr, nullptr);
+
+        #ifdef __linux__
+            int length = wcslen(input);
+        #else
+            int length = ::WideCharToMultiByte(CP_ACP, 0, input, -1, nullptr, 0, nullptr, nullptr);
+        #endif
+        
         if (length > 0)
         {
-            // length includes null terminator
-            messageBuffer.resize(length);
-            ::WideCharToMultiByte(CP_ACP, 0, input, -1, messageBuffer.data(), messageBuffer.size(), nullptr, nullptr);
+            #ifdef __linux__
+                // length does not include null terminator
+                messageBuffer.resize(length + 1);
+                wcstombs(messageBuffer.data(), input, messageBuffer.size());  
+            #else    
+                // length includes null terminator
+                messageBuffer.resize(length);
+                ::WideCharToMultiByte(CP_ACP, 0, input, -1, messageBuffer.data(), messageBuffer.size(), nullptr, nullptr);
+            #endif
         }
         return string(messageBuffer.data());
     }

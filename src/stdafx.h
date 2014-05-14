@@ -24,9 +24,18 @@
 #include <node.h>
 #include <node_buffer.h>
 
-#include <sqlucode.h>
+#ifdef __linux__
+    #include <sql.h>
+    #include <sqltypes.h>
+    #include <sqlext.h>
+    #include <string.h>
+    #include <math.h>
+    
+    #define _isnan(X) std::isnan(X)
+    #define _finite(X) std::isfinite(X)
+#endif
 
-#include <windows.h>	// for critical section until xplatform
+#include <sqlucode.h>
 
 #include <vector>
 #include <queue>
@@ -41,7 +50,12 @@
 #include "OdbcHandle.h"
 
 #define interface struct 	// for the COM interfaces in sqlncli.h and to avoid including extra files
-#include "sqlncli.h"	 	// SQL Server specific constants
+
+#ifdef __linux__
+    #include "sqlncli_unix.h"
+#else
+    #include "sqlncli_windows.h"	 	// SQL Server specific constants
+#endif
 
 // default values filled in for a JS date object when retrieving a SQL Server time field
 // There is no default JS date when only a time is furnished, so we are using the SQL Server

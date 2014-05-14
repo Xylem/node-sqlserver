@@ -17,6 +17,31 @@
 // limitations under the License.
 //---------------------------------------------------------------------------------------------------------------------------------
 
+#ifdef __linux__
+
+    #include <pthread.h>
+
+    #define CRITICAL_SECTION pthread_mutex_t
+    #define InitializeCriticalSection(X) \
+            pthread_mutexattr_t attr; \
+            pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP); \
+            pthread_mutex_init(X, &attr); \
+            pthread_mutexattr_destroy(&attr)
+            
+    #define DeleteCriticalSection(X) \
+            pthread_mutex_destroy(X) 
+            
+    #define EnterCriticalSection(X) \
+            pthread_mutex_lock(X)
+            
+    #define LeaveCriticalSection(X) \
+            pthread_mutex_unlock(X)
+
+#else
+    #include <windows.h>
+
+#endif
+
 namespace mssql {
 
    class CriticalSection {
