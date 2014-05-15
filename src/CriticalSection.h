@@ -37,9 +37,6 @@
     #define LeaveCriticalSection(X) \
             pthread_mutex_unlock(X)
 
-#else
-    #include <windows.h>
-
 #endif
 
 namespace mssql {

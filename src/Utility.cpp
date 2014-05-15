@@ -49,23 +49,49 @@ namespace mssql
         vector<char> messageBuffer;
 
         #ifdef __linux__
-            int length = wcslen(input);
+            int byteCount = 0;
+            int i = -1;
+            int bufferCounter = -1;
+                        
+            do {
+                ++i;
+
+                if ((input[i] & 0xFF00) == 0) {
+                    byteCount += 1;
+                } else {
+                    byteCount += 2;
+                }
+            } while (input[i] != 0);
+            
+            messageBuffer.resize(byteCount);
+            
+            i = -1;
+            
+            do {
+                ++i;
+                ++bufferCounter;
+                
+                if ((input[i] & 0xFF00) != 0) {
+                    messageBuffer.data()[bufferCounter] = input[i] >> 8;
+                    ++bufferCounter;
+                }
+
+                messageBuffer.data()[bufferCounter] = input[i] & 0xFF;
+            } while (input[i] != 0);
+
         #else
+            
             int length = ::WideCharToMultiByte(CP_ACP, 0, input, -1, nullptr, 0, nullptr, nullptr);
-        #endif
-        
-        if (length > 0)
-        {
-            #ifdef __linux__
-                // length does not include null terminator
-                messageBuffer.resize(length + 1);
-                wcstombs(messageBuffer.data(), input, messageBuffer.size());  
-            #else    
+            
+            if (length > 0)
+            {    
                 // length includes null terminator
                 messageBuffer.resize(length);
                 ::WideCharToMultiByte(CP_ACP, 0, input, -1, messageBuffer.data(), messageBuffer.size(), nullptr, nullptr);
-            #endif
-        }
+            }
+            
+        #endif
+        
         return string(messageBuffer.data());
     }
 }

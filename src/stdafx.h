@@ -33,6 +33,8 @@
     
     #define _isnan(X) std::isnan(X)
     #define _finite(X) std::isfinite(X)
+#else
+    #include <windows.h>
 #endif
 
 #include <sqlucode.h>
